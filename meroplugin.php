@@ -52,35 +52,38 @@ ob_start();
 	echo'<input type="submit" name="submitt" value="SUBMIT">';
 	echo'</form> </div>';
 
+
+
+	if (isset($_POST['submitt'])){
 		$username= trim($_POST['user_name']);
 		$useremail= trim($_POST['user_email']);
 		$userfeedback= trim($_POST['story']);
 
 
-	$commentdata = array(
-		'comment_post_ID' => 0, // Use 0 if you are not associating this with a specific post
-		'comment_author' => $username,
-		'comment_author_email' => $useremail,
-		'comment_author_url' => '',
-		'comment_content' => $userfeedback,
-		'comment_type' => 'feedback', // Custom comment type
-		'comment_parent' => 0,
-		'user_id' => get_current_user_id(),
-	);
+		$commentdata = array(
+			'comment_post_ID' => 0, // Use 0 if you are not associating this with a specific post
+			'comment_author' => $username,
+			'comment_author_email' => $useremail,
+			'comment_author_url' => '',
+			'comment_content' => $userfeedback,
+			'comment_type' => 'feedback', // Custom comment type
+			'comment_parent' => 0,
+			'user_id' => get_current_user_id(),
+		);
 
-	if (isset($_POST['submitt'])){
-
-		if (empty($username) || empty($u_email) || empty($u_feedback)) {
+		if (empty($username) || empty($useremail) || empty($userfeedback)) {
 			echo "<p style='color: red;'>All fields are required. There was a problem saving your feedback. Please try again.</p>";
+			//var_dump($commentdata);
 		} else {
 			// Process the form data (e.g., send an email, save to database)
 			// Insert comment into database
 			$comment_id = wp_insert_comment($commentdata);
 			echo "<p style='color: green;'>Thank you for your feedback!</p>";
+			var_dump($commentdata);
 
-			$username= '';
-			$u_email= '';
-			$u_feedback= '';
+			//$username= '';
+			//$u_email= '';
+			//$u_feedback= '';
 		}
 
 	}
