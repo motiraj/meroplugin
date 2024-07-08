@@ -51,44 +51,37 @@ ob_start();
 	echo'<textarea id="story" name="story" rows="5" cols="33"> Your Valuable Feedback</textarea><br>';
 	echo'<input type="submit" name="submitt" value="SUBMIT">';
 	echo'</form> </div>';
-	//=====================================================================
-	if (isset($_POST['submitt'])){
+
 		$username= trim($_POST['user_name']);
 		$useremail= trim($_POST['user_email']);
 		$userfeedback= trim($_POST['story']);
-//-----------------------------------------------------
-		$commentdata = array(
-			'comment_post_ID' => 0, // Use 0 if you are not associating this with a specific post
-			'comment_author' => $username,
-			'comment_author_email' => $useremail,
-			'comment_author_url' => '',
-			'comment_content' => $userfeedback,
-			'comment_type' => 'feedback', // Custom comment type
-			'comment_parent' => 0,
-			'user_id' => get_current_user_id(),
-		);
-//================================================================
-		global $wpdb;
-		$table_name = $wpdb->prefix . 'wp_comments';
-// Retrieve all feedback data
-		$results = $wpdb->get_results("SELECT * FROM wp_comments where comment_type='feedback'");
-		// Check in existing data in database
-		foreach ($results as $comment) {
-			if (trim($comment->comment_content) == trim($userfeedback) and trim($comment->comment_author_email) == trim($useremail) ) {
-				$duplicate_comment=true;
-				return ob_get_clean();
-				break;
-		}
-		}
 
-		if (empty($username) || empty($useremail) || empty($userfeedback)) {
+
+	$commentdata = array(
+		'comment_post_ID' => 0, // Use 0 if you are not associating this with a specific post
+		'comment_author' => $username,
+		'comment_author_email' => $useremail,
+		'comment_author_url' => '',
+		'comment_content' => $userfeedback,
+		'comment_type' => 'feedback', // Custom comment type
+		'comment_parent' => 0,
+		'user_id' => get_current_user_id(),
+	);
+
+	if (isset($_POST['submitt'])){
+
+		if (empty($username) || empty($u_email) || empty($u_feedback)) {
 			echo "<p style='color: red;'>All fields are required. There was a problem saving your feedback. Please try again.</p>";
-		}
-
-			elseif( $duplicate_comment = 0) {
+		} else {
+			// Insert comment into database
 			$comment_id = wp_insert_comment($commentdata);
 			echo "<p style='color: green;'>Thank you for your feedback!</p>";
+
+			$username= '';
+			$u_email= '';
+			$u_feedback= '';
 		}
+
 	}
 	return ob_get_clean();
 	}
