@@ -15,7 +15,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-
+function my_enqueued_assets() {
+	//wp_enqueue_script('my-js-file', plugin_dir_url(__FILE__) . '/js/script.js', '', time());
+	wp_enqueue_style('my-css-file', plugin_dir_url(__FILE__) . '/css/style.css', '', time());
+}
+add_action('wp_enqueue_scripts', 'my_enqueued_assets');
 function my_plugin_menu() {
 
     // Add the new admin menu and page and save the returned hook suffix
@@ -26,7 +30,9 @@ function my_plugin_menu() {
 }
 
 add_action('admin_menu', 'my_plugin_menu');
-
+global $wpdb;
+Global $duplicate_comment;
+$table_name = $wpdb->prefix . 'wp_comments';
 
 function myplugin()
 {
@@ -68,9 +74,7 @@ ob_start();
 			'user_id' => get_current_user_id(),
 		);
 //================================================================
-		global $wpdb;
-		Global $duplicate_comment;
-		$table_name = $wpdb->prefix . 'wp_comments';
+
 // Retrieve all feedback data
 		$results = $wpdb->get_results("SELECT * FROM wp_comments where comment_type='feedback'");
 		// Check in existing data in database
@@ -103,10 +107,34 @@ ob_start();
 
 
 
+
 add_shortcode('my_shortcode', 'my_custom_shortcode');
 
 //add_action('init',save_feedback());
 
+function my_testimoinals() {
+	ob_start();
 
+	global $wpdb;
+	$results = $wpdb->get_results("SELECT * FROM wp_comments WHERE comment_type='feedback' AND best_comment='1'");
+		if ($results) {
+		echo '<div class="testimonial-container">';
+		foreach ($results as $row) {
+			echo '<div class="testimonial">';
+			echo '<p>' . esc_html($row->comment_author) . '</p>';
+			echo '<p>' . esc_html($row->comment_content) .'</p>';
+			echo '</div>';
+		}
+		echo '</div>';
+		return ob_get_clean();
+	}
+}
+
+
+
+
+
+
+add_shortcode('testimonials', 'my_testimoinals');
 
 
