@@ -23,13 +23,14 @@ add_action('wp_enqueue_scripts', 'my_enqueued_assets');
 function my_plugin_menu() {
 
     // Add the new admin menu and page and save the returned hook suffix
-    $hook_suffix = add_menu_page('Mero Plugin', 'Mero Plugin Dashboard', 'manage_options', 'my-plugin', 'myplugin');
+  add_menu_page('Mero Plugin', 'Mero Plugin Dashboard', 'manage_options', 'my-plugin', 'myplugin');
 
     // Add a submenu to the main menu
     add_submenu_page('my-plugin', 'Feedback Data', 'Feedback Data', 'manage_options', 'my-plugin-settings', 'pgsetting');
 }
 
 add_action('admin_menu', 'my_plugin_menu');
+
 global $wpdb;
 Global $duplicate_comment;
 $table_name = $wpdb->prefix . 'wp_comments';
@@ -76,11 +77,11 @@ ob_start();
 //================================================================
 
 // Retrieve all feedback data
-		$results = $wpdb->get_results("SELECT * FROM wp_comments where comment_type='feedback'");
+		$results = $GLOBALS['wpdb']->get_results("SELECT * FROM wp_comments where comment_type='feedback'");
 		// Check in existing data in database
 		foreach ($results as $comment) {
 			if (trim($comment->comment_content) == trim($userfeedback) and trim($comment->comment_author_email) == trim($useremail) ) {
-				$duplicate_comment==TRUE;
+				$GLOBALS ['duplicate_comment']==TRUE;
 				echo"Duplicate Record Found";
 				return ob_get_clean();
 				break;
@@ -90,16 +91,14 @@ ob_start();
 		if (empty($username) || empty($useremail) || empty($userfeedback)) {
 			echo "<p style='color: red;'>All fields are required. There was a problem saving your feedback. Please try again.</p>";
 		}
-
-			elseif( $duplicate_comment == FALSE ) {
+			elseif ( $GLOBALS ['duplicate_comment']== FALSE ) {
 			$comment_id = wp_insert_comment($commentdata);
-			$duplicate_comment==TRUE;
+				$GLOBALS ['duplicate_comment']==TRUE;
 			echo "<p style='color: green;'>Thank you for your feedback!</p>";
 		}
 		else
 		{
-			echo $duplicate_comment;
-		//	echo "<p style='color: red;'>Duplicate Feedback form Same User</p>";
+			echo $GLOBALS ['duplicate_comment'];
 		}
 	}
 	return ob_get_clean();
@@ -116,16 +115,23 @@ function my_testimoinals() {
 	ob_start();
 
 	global $wpdb;
+
 	$results = $wpdb->get_results("SELECT * FROM wp_comments WHERE comment_type='feedback' AND best_comment='1'");
 		if ($results) {
-		echo '<div class="testimonial-container">';
+			echo'<div class="testimonials-container">';
+
+			$image_path = plugin_dir_url( __FILE__ ) . 'img/image.png';
 		foreach ($results as $row) {
+			echo '<div class="testimonials">';
 			echo '<div class="testimonial">';
-			echo '<p>' . esc_html($row->comment_author) . '</p>';
+			echo '<div class="picture"> <img src='.$image_path.'></div>';
+			echo '<p><b>' . esc_html($row->comment_author) . '</b></b></p>';
 			echo '<p>' . esc_html($row->comment_content) .'</p>';
 			echo '</div>';
-		}
-		echo '</div>';
+			echo'</div>';
+
+			}
+			echo '</div>';
 		return ob_get_clean();
 	}
 }
@@ -136,5 +142,6 @@ function my_testimoinals() {
 
 
 add_shortcode('testimonials', 'my_testimoinals');
+
 
 
