@@ -46,12 +46,11 @@ if ($results) {
 //echo' Successfully  Deleted'. $delete_id;
 //
 //}
-
 // **********************  Add column in wp_comments table to update best comment  *************************
 if(!isset($table_name->best_comment)){
 	$wpdb->query("ALTER TABLE wp_comments ADD best_comment int(2) NOT NULL DEFAULT 0");
 }
-
+//**********************************************************************************************************
 // ************************* Update for the testimonials ***************************
 if (isset($_POST['best_feedback'])){
 	$test_data  = $wpdb->query("UPDATE wp_comments SET best_comment = '0'");
