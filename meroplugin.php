@@ -35,11 +35,122 @@ add_action('admin_menu', 'my_plugin_menu');
 global $wpdb;
 Global $duplicate_comment;
 $table_name = $wpdb->prefix . 'wp_comments';
-
+global $testimonial_height;
+ function testimonials_settings() {
+	 echo '<p>Testimonials Background Color</p>';
+	 echo '<div class ="color_picker_background" id="color_picker_background"><input type="color" id="testimonial_background_color" name="testimonial_background_color"  value="#e66465" /> </div> ';
+	 echo '<div>
+  	<input type="range" id="testimonial_height" name="testimonial_height" min="0" max="1000" step="10" />
+  	<label for="testimonial_height">Testimonial Height</label>
+	</div>';
+	 echo '<div>
+  	<input type="range" id="testimonial_width" name="testimonial_width" min="0" max="1000"step="10" />
+  	<label for="testimonial_height">Testimonial Width</label>
+	</div>';
+	 echo "<script>document.getElementById('testimonial_height').value</script>";
+	 echo "<script>console.log(document.getElementById('testimonial_height').value)</script>";
+ }
 function myplugin()
 {
-	echo ("This is my Plugin Page");
+	echo ("<h1>Please Copy the ShortCode for Feedback and Paste in Page or Post</h1>");
+	echo ('<div class="shortcode" id="shortcode" name="shortcode">[my_shortcode]</div><hr>');
+	testimonials_settings();
+	echo'<div class="testimonials-container">';
+	$image_path = plugin_dir_url( __FILE__ ) . 'img/image.png';
+		echo '<div class="testimonials">';
+		echo '<div class="testimonial">';
+		echo '<div class="picture"> <img src='.$image_path.'></div>';
+		echo '<p align="center"><b>' . ucwords('Mr. Same Sample') . '</b></p>';
+		echo '<p> Sample Comments </p>';
+		echo '</div>';
+		echo'</div>';
+	echo '<style>
+.testimonials-container {
+   display:contents;
+    }
+.testimonials {
+    width: 270px;
+    height:300px;
+    display: inline-flex;
+    flex-wrap: wrap;
+    background-color: #ffffff;
+    border-radius: 20px;
+    margin: 14px;
+    /*box-shadow: 0 0 20px rgba(0,0,0,0.1);*/
 }
+.testimonial {
+    border-bottom: 1px solid #eee;
+    width: 270px;
+    height:300px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(12, 1, 1, 0.1);
+}
+.testimonial:hover{
+    box-shadow: 0 0 15px rgba(17, 16, 16, 0.3);
+    cursor: context-menu;
+}
+.picture {
+    padding-top: 15px;
+    text-align: center;
+    image-rendering: crisp-edges;
+}
+.testimonial p {
+    font-size: 15px;
+    margin: 10px;
+    line-height: 1.5;
+    color: #333;
+}
+.testimonial img{
+    height: 70px;
+}
+</style>';
+}
+function custom_dashboard_css() {
+	echo '<style>
+.testimonials-container {
+   display:contents;
+    }
+.testimonials {
+    width: 270px;
+    height:300px;
+    display: inline-flex;
+    flex-wrap: wrap;
+    background-color: #ffffff;
+    border-radius: 20px;
+    margin: 14px;
+    /*box-shadow: 0 0 20px rgba(0,0,0,0.1);*/
+}
+.testimonial {
+    border-bottom: 1px solid #eee;
+    width: 270px;
+    height:300px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(12, 1, 1, 0.1);
+}
+.testimonial:hover{
+    box-shadow: 0 0 15px rgba(17, 16, 16, 0.3);
+    cursor: context-menu;
+}
+.picture {
+    padding-top: 15px;
+    text-align: center;
+    image-rendering: crisp-edges;
+}
+.testimonial p {
+    font-size: 15px;
+    margin: 10px;
+    line-height: 1.5;
+    color: #333;
+}
+.testimonial img{
+    height: 70px;
+}
+</style>';
+}
+
+// Hook into the admin_head action to inject CSS into the admin dashboard
+//add_action('admin_head', 'custom_dashboard_css');
+
 function pgsetting()
 {
 	include ('database.php');
@@ -49,7 +160,7 @@ function pgsetting()
 
 function my_custom_shortcode() {
 	ob_start();
-	echo '<div> <h1> Feedback </h1></div>';
+//	echo '<div> <h1> Feedback </h1></div>';
 	echo '<div id="userform" name="userform"> <form method="POST" action="">';
 	echo '<label for="author"> Name: </label><br>';
 	echo '<input type="text" id="author" name="author"><br>';
@@ -127,7 +238,7 @@ function my_testimoinals() {
 			echo '<div class="testimonials">';
 			echo '<div class="testimonial">';
 			echo '<div class="picture"> <img src='.$image_path.'></div>';
-			echo '<p align="center"><b>' . esc_html($row->comment_author) . '</b></b></p>';
+			echo '<p align="center"><b>' . ucwords( esc_html($row->comment_author) ). '</b></p>';
 			echo '<p>' . esc_html($row->comment_content) .'</p>';
 			echo '</div>';
 			echo'</div>';
