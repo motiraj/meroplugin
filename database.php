@@ -8,7 +8,7 @@ $table_name = $wpdb->prefix . 'wp_comments';
 $results = $wpdb->get_results("SELECT * FROM wp_comments where comment_type='feedback'");
 echo'<h1>Received Feedback</h1>';
 
-// Check if there are any results
+// Check if there are any results in dashboard Feedback Data sub page.
 if ($results) {
 	echo"<div class='mero_fb' id='mero-fb'>";
 	echo '<form method="post" action=""> <table border="1"  style="color: darkblue; border: 1px solid black;" class="output_table">';
@@ -20,7 +20,7 @@ if ($results) {
 		echo '<td style="border-collapse: collapse">' . esc_html($row->comment_author_email) . '</td>';
 		echo '<td style="border-collapse: collapse;">' . esc_html($row->comment_content) . '</td>';
 
-// *************** Check if best comment to display in checkbox ************************************************
+// *************** Check if best comment to display in checkbox **********************************
 		if ($row->best_comment){
 			echo '<td style="text-align: center"><input type="checkbox"  checked="checked" id=" '.esc_html($row->comment_ID) .'" name="best[]" value="'.esc_html($row->comment_ID) .' "></td>';
 			}
@@ -51,7 +51,7 @@ if ($results) {
 if(!isset($table_name->best_comment)){
 	$wpdb->query("ALTER TABLE wp_comments ADD best_comment int(2) NOT NULL DEFAULT 0");
 }
-//**********************************************************************************************************
+//******************************************************************************
 // ************************* Update for the testimonials ***************************
 if (isset($_POST['submit'])){
 	$test_data  = $wpdb->query("UPDATE wp_comments SET best_comment = '0'");

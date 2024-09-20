@@ -36,7 +36,9 @@ global $wpdb;
 Global $duplicate_comment;
 $table_name = $wpdb->prefix . 'wp_comments';
 global $testimonial_height;
+// Testimoinals layout  setting in dashboard
  function testimonials_settings() {
+	 echo '<h2>Testimonials Layout and Color Settings</h2>';
 	 echo '<p>Testimonials Background Color</p>';
 	 echo '<div class ="color_picker_background" id="color_picker_background"><input type="color" id="testimonial_background_color" name="testimonial_background_color"  value="#e66465" /> </div> ';
 	 echo '<div>
@@ -50,10 +52,14 @@ global $testimonial_height;
 	 echo "<script>document.getElementById('testimonial_height').value</script>";
 	 echo "<script>console.log(document.getElementById('testimonial_height').value)</script>";
  }
+
+ // Short code page in dashboard
 function myplugin()
 {
-	echo ("<h1>Please Copy the ShortCode for Feedback and Paste in Page or Post</h1>");
-	echo ('<div class="shortcode" id="shortcode" name="shortcode">[my_shortcode]</div><hr>');
+	echo ("<h2>Feedback Form Short Code</h2>");
+	echo ('<div class="shortcode" id="shortcode" name="shortcode"><h2>[my_shortcode]</h2></div><hr>');
+	echo"<h2> Testimonials Short Code</h2>";
+	echo "<h2>[testimonials]</h2><hr>'";
 	testimonials_settings();
 	echo'<div class="testimonials-container">';
 	$image_path = plugin_dir_url( __FILE__ ) . 'img/image.png';
@@ -61,9 +67,11 @@ function myplugin()
 		echo '<div class="testimonial">';
 		echo '<div class="picture"> <img src='.$image_path.'></div>';
 		echo '<p align="center"><b>' . ucwords('Mr. Same Sample') . '</b></p>';
-		echo '<p> Sample Comments </p>';
+		echo '<p> The Quick Brown Fox Jump Over the Lazy Dog. The Quick Brown Fox Jump Over the Lazy Dog. The Quick Brown Fox Jump Over the Lazy Dog. The Quick Brown Fox Jump Over the Lazy Dog.  </p>';
 		echo '</div>';
 		echo'</div>';
+
+
 	echo '<style>
 .testimonials-container {
    display:contents;
@@ -105,6 +113,7 @@ function myplugin()
 }
 </style>';
 }
+// Testimonials layout css for dashboard setting
 function custom_dashboard_css() {
 	echo '<style>
 .testimonials-container {
@@ -150,14 +159,14 @@ function custom_dashboard_css() {
 
 // Hook into the admin_head action to inject CSS into the admin dashboard
 //add_action('admin_head', 'custom_dashboard_css');
-
+//=========================================================================
 function pgsetting()
 {
 	include ('database.php');
 	//echo "This is my Plugin Settings  Page";
 }
 
-
+// Feedback Plugin Shordcode function
 function my_custom_shortcode() {
 	ob_start();
 //	echo '<div> <h1> Feedback </h1></div>';
@@ -168,7 +177,7 @@ function my_custom_shortcode() {
 	echo '<input type="email" id="email" name="email" ><br>';
 	echo '<label for="comment"> Feedback: </label><br>';
 	//echo'<textarea class ="comment-form-comment"  id="comment" name="story" > Your Valuable Feedback</textarea><br>';
-	echo '<textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required=""></textarea>';
+	echo '<textarea id="comment" name="comment" cols="45" rows="8" maxlength="300" required=""></textarea>';
 	echo '<br><input type="submit"  id="submit" class="wp-block-button__link wp-element-button"   name="submitt" value="SUBMIT">';
 	echo '</form> </div>';
 	if ( $_SERVER["REQUEST_METHOD"] == "POST" ) {
@@ -208,22 +217,23 @@ function my_custom_shortcode() {
 			echo "<p style='color: red;'>All fields are required. There was a problem saving your feedback. Please try again.</p>";
 		} elseif ( $GLOBALS ['duplicate_comment'] == false ) {
 			$comment_id = wp_insert_comment( $commentdata );
+//			header("Location: " . $_SERVER['PHP_SELF']);
+//			exit();
 			$GLOBALS ['duplicate_comment'] == true;
 			echo "<p style='color: green;'>Thank you for your feedback!</p>";
 		} else {
 			echo $GLOBALS ['duplicate_comment'];
+			echo "<p style='color: red;'>Duplicate Data Found!</p>";
 		}
 	}
 		return ob_get_clean();
 	}
 
-
-
-
 add_shortcode('my_shortcode', 'my_custom_shortcode');
 
 //add_action('init',save_feedback());
 
+// Testimonials shortcode function
 function my_testimoinals() {
 	ob_start();
 
@@ -238,7 +248,7 @@ function my_testimoinals() {
 			echo '<div class="testimonials">';
 			echo '<div class="testimonial">';
 			echo '<div class="picture"> <img src='.$image_path.'></div>';
-			echo '<p align="center"><b>' . ucwords( esc_html($row->comment_author) ). '</b></p>';
+			echo '<div class="username" align="center"><b>' . ucwords( esc_html($row->comment_author) ). '</b></div>';
 			echo '<p>' . esc_html($row->comment_content) .'</p>';
 			echo '</div>';
 			echo'</div>';
@@ -248,12 +258,6 @@ function my_testimoinals() {
 		return ob_get_clean();
 	}
 }
-
-
-
-
-
-
 add_shortcode('testimonials', 'my_testimoinals');
 
 

@@ -2,7 +2,6 @@
    display:contents;
     }
 
-
 .testimonials {
     width: 270px;
     height:300px;
@@ -37,6 +36,7 @@
     margin: 10px;
     line-height: 1.5;
     color: #333;
+    text-align: justify;
 }
 .testimonial img{
     height: 70px;
