@@ -150,7 +150,7 @@ function custom_dashboard_css() {
 
 // Hook into the admin_head action to inject CSS into the admin dashboard
 //add_action('admin_head', 'custom_dashboard_css');
-
+//=========================================================================
 function pgsetting()
 {
 	include ('database.php');
